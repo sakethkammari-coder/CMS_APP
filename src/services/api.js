@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const API_URL = "https://lms-backend-eyzj.onrender.com";
+
 export const getCourses = () => {
-  return axios.get("https://lms-backend.onrender.com/api/message");
+  return axios.get(`${API_URL}/api/courses`);
 };
