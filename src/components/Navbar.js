@@ -1,10 +1,23 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Navbar({ setSearch }) {
 
+  const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const logout = () => {
+
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
+    navigate("/login");
+
+  };
+
   return (
 
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark" style={{position:"sticky",top:1,zIndex:1}}>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark" style={{ position:"sticky", top:1, zIndex:1 }}>
 
       <div className="container">
 
@@ -28,13 +41,30 @@ function Navbar({ setSearch }) {
             Home
           </Link>
 
-          <Link className="btn btn-outline-light me-2" to="/my-courses">
-            My Courses
-          </Link>
+          {user && (
+            <Link className="btn btn-outline-light me-2" to="/my-courses">
+              My Courses
+            </Link>
+          )}
 
-          <Link className="btn btn-warning" to="/login">
-            Login
-          </Link>
+          {user ? (
+            <>
+              <span className="text-white me-3">
+                Welcome {user.name}
+              </span>
+
+              <button
+                className="btn btn-danger"
+                onClick={logout}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link className="btn btn-warning" to="/login">
+              Login
+            </Link>
+          )}
 
         </div>
 

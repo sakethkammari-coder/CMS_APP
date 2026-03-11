@@ -13,46 +13,68 @@ function CourseDetails() {
 
   useEffect(() => {
 
-    // fetch course details
     axios
-      .get(`http://localhost:3001/courses/${id}`)
-      .then((res) => setCourse(res.data));
+      .get("http://localhost:5000/api/courses")
+      .then((res) => {
 
-    let courses =
-      JSON.parse(localStorage.getItem("courses")) || [];
+        const foundCourse = res.data.find((c) => c._id === id);
 
-    if (courses.includes(id)) {
-      setEnrolled(true);
-      setProgress(30);
-    }
+        setCourse(foundCourse);
+
+      })
+      .catch((err) => console.log(err));
 
   }, [id]);
 
-  const enrollCourse = () => {
 
-    let courses =
-      JSON.parse(localStorage.getItem("courses")) || [];
 
-    if (!courses.includes(id)) {
-      courses.push(id);
+  const enrollCourse = async () => {
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please login to enroll");
+      navigate("/login");
+      return;
     }
 
-    localStorage.setItem(
-      "courses",
-      JSON.stringify(courses)
-    );
+    try {
 
-    setEnrolled(true);
-    setProgress(10);
+      await axios.post(
+        "http://localhost:5000/api/enroll",
+        { courseId: id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
 
-    alert("Course Enrolled");
+      setEnrolled(true);
+      setProgress(10);
 
-    navigate(`/player/${id}`);
+      alert("Course Enrolled");
+
+      navigate(`/player/${id}`);
+
+    } catch (error) {
+
+      console.log(error);
+      alert("Enrollment failed");
+
+    }
+
   };
+
+
 
   const continueCourse = () => {
+
     navigate(`/player/${id}`);
+
   };
+
+
 
   return (
 
@@ -60,17 +82,18 @@ function CourseDetails() {
 
       <h2>Course Details</h2>
 
-      <p><strong>Course ID:</strong> {id}</p>
-
-      {/* Added Description and Content */}
       {course && (
         <>
+          <h4>{course.title}</h4>
+
+          <p><strong>Instructor:</strong> {course.instructor}</p>
+
           <p><strong>Description:</strong> {course.description}</p>
+
           <p>{course.content}</p>
         </>
       )}
 
-      {/* Progress Bar */}
       <div className="mb-3">
 
         <label>Course Progress</label>
@@ -89,7 +112,6 @@ function CourseDetails() {
 
       </div>
 
-      {/* Buttons */}
       {enrolled ? (
 
         <button

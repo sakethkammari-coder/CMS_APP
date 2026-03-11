@@ -18,37 +18,32 @@ function Login() {
 
     try {
 
-      // find user by email
-      const res = await axios.get(
-        `http://localhost:3001/users?email=${email}`
+      const res = await axios.post(
+        "https://lms-backend-eyzj.onrender.com/api/login",
+        {
+          email,
+          password
+        }
       );
 
-      if (res.data.length === 0) {
-        alert("User not found");
-        return;
-      }
+      const user = res.data;
 
-      const user = res.data[0];
+      // store logged-in user
+      localStorage.setItem("user", JSON.stringify(user));
 
-      // check password
-      if (user.password === password) {
+      alert("Login successful");
 
-        localStorage.setItem("user", JSON.stringify(user));
-
-        alert("Login successful");
-
-        navigate("/");
-
-      } else {
-
-        alert("Incorrect password");
-
-      }
+      navigate("/");
 
     } catch (error) {
 
+      if (error.response) {
+        alert(error.response.data.message);
+      } else {
+        alert("Login error");
+      }
+
       console.error(error);
-      alert("Login error");
 
     }
 

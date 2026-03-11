@@ -19,30 +19,30 @@ function Signup() {
 
     try {
 
-      // check if user already exists
-      const res = await axios.get(
-        `http://localhost:3001/users?email=${email}`
+      // signup request
+      await axios.post(
+        "https://lms-backend-eyzj.onrender.com/api/signup",
+        {
+          name,
+          email,
+          password
+        }
       );
 
-      if (res.data.length > 0) {
-        alert("User already exists");
-        return;
-      }
-
-      // create new user
-      await axios.post("http://localhost:3001/users", {
-        name,
-        email,
-        password
-      });
-
-      alert("Signup successful!");
+      alert("Signup successful! Please login.");
 
       navigate("/login");
 
     } catch (error) {
+
+      if (error.response) {
+        alert(error.response.data.message);
+      } else {
+        alert("Signup error");
+      }
+
       console.error(error);
-      alert("Error registering user");
+
     }
 
   };
@@ -61,6 +61,7 @@ function Signup() {
             type="text"
             placeholder="Name"
             className="form-control form-control-sm mb-3"
+            value={name}
             onChange={(e) => setName(e.target.value)}
           />
 
@@ -68,6 +69,7 @@ function Signup() {
             type="email"
             placeholder="Email"
             className="form-control form-control-sm mb-3"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
 
@@ -75,6 +77,7 @@ function Signup() {
             type="password"
             placeholder="Password"
             className="form-control form-control-sm mb-3"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
 

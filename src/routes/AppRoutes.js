@@ -5,6 +5,7 @@ import CourseDetails from "../pages/CourseDetails";
 import MyCourses from "../pages/MyCourses";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 function AppRoutes({ search }) {
 
@@ -24,12 +25,20 @@ function AppRoutes({ search }) {
 
       <Route
         path="/player/:id"
-        element={<CoursePlayer />}
+        element={
+          <ProtectedRoute>
+            <CoursePlayer />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/my-courses"
-        element={<MyCourses />}
+        element={
+          <ProtectedRoute>
+            <MyCourses />
+          </ProtectedRoute>
+        }
       />
 
       <Route path="/login" element={<Login />} />
