@@ -4,137 +4,136 @@ import axios from "axios";
 
 function CourseDetails() {
 
-  const { id } = useParams();
-  const navigate = useNavigate();
+const { id } = useParams();
+const navigate = useNavigate();
 
-  const [course, setCourse] = useState(null);
-  const [enrolled, setEnrolled] = useState(false);
-  const [progress, setProgress] = useState(0);
+const [course, setCourse] = useState(null);
+const [enrolled, setEnrolled] = useState(false);
+const [progress, setProgress] = useState(0);
 
-  useEffect(() => {
-
-    axios
-      .get("http://localhost:5000/api/courses")
-      .then((res) => {
-
-        const foundCourse = res.data.find((c) => c._id === id);
-
-        setCourse(foundCourse);
-
-      })
-      .catch((err) => console.log(err));
-
-  }, [id]);
+useEffect(() => {
 
 
+axios
+  .get("https://lms-backend-eyzj.onrender.com/api/courses")
+  .then((res) => {
 
-  const enrollCourse = async () => {
+    const foundCourse = res.data.find((c) => c._id === id);
 
-    const token = localStorage.getItem("token");
+    setCourse(foundCourse);
 
-    if (!token) {
-      alert("Please login to enroll");
-      navigate("/login");
-      return;
+  })
+  .catch((err) => console.log(err));
+
+
+}, [id]);
+
+const enrollCourse = async () => {
+
+
+const token = localStorage.getItem("token");
+
+if (!token) {
+  alert("Please login to enroll");
+  navigate("/login");
+  return;
+}
+
+try {
+
+  await axios.post(
+    "https://lms-backend-eyzj.onrender.com/api/enroll",
+    { courseId: id },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     }
+  );
 
-    try {
+  setEnrolled(true);
+  setProgress(10);
 
-      await axios.post(
-        "http://localhost:5000/api/enroll",
-        { courseId: id },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+  alert("Course Enrolled");
 
-      setEnrolled(true);
-      setProgress(10);
+  navigate(`/player/${id}`);
 
-      alert("Course Enrolled");
+} catch (error) {
 
-      navigate(`/player/${id}`);
+  console.log(error);
+  alert("Enrollment failed");
 
-    } catch (error) {
+}
 
-      console.log(error);
-      alert("Enrollment failed");
+};
 
-    }
-
-  };
+const continueCourse = () => {
 
 
-
-  const continueCourse = () => {
-
-    navigate(`/player/${id}`);
-
-  };
+navigate(`/player/${id}`);
 
 
+};
 
-  return (
+return (
 
-    <div className="container mt-4">
+<div className="container mt-4">
 
-      <h2>Course Details</h2>
+  <h2>Course Details</h2>
 
-      {course && (
-        <>
-          <h4>{course.title}</h4>
+  {course && (
+    <>
+      <h4>{course.title}</h4>
 
-          <p><strong>Instructor:</strong> {course.instructor}</p>
+      <p><strong>Instructor:</strong> {course.instructor}</p>
 
-          <p><strong>Description:</strong> {course.description}</p>
+      <p><strong>Description:</strong> {course.description}</p>
 
-          <p>{course.content}</p>
-        </>
-      )}
+      <p>{course.content}</p>
+    </>
+  )}
 
-      <div className="mb-3">
+  <div className="mb-3">
 
-        <label>Course Progress</label>
+    <label>Course Progress</label>
 
-        <div className="progress">
+    <div className="progress">
 
-          <div
-            className="progress-bar"
-            role="progressbar"
-            style={{ width: `${progress}%` }}
-          >
-            {progress}%
-          </div>
-
-        </div>
-
+      <div
+        className="progress-bar"
+        role="progressbar"
+        style={{ width: `${progress}%` }}
+      >
+        {progress}%
       </div>
-
-      {enrolled ? (
-
-        <button
-          className="btn btn-primary"
-          onClick={continueCourse}
-        >
-          Continue Course
-        </button>
-
-      ) : (
-
-        <button
-          className="btn btn-success"
-          onClick={enrollCourse}
-        >
-          Enroll & Start Course
-        </button>
-
-      )}
 
     </div>
 
-  );
+  </div>
+
+  {enrolled ? (
+
+    <button
+      className="btn btn-primary"
+      onClick={continueCourse}
+    >
+      Continue Course
+    </button>
+
+  ) : (
+
+    <button
+      className="btn btn-success"
+      onClick={enrollCourse}
+    >
+      Enroll & Start Course
+    </button>
+
+  )}
+
+</div>
+
+);
 
 }
 
