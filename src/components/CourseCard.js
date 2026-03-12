@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 function CourseCard({ course }) {
 
   return (
-    <div className="col-md-3 mb-4" >
+
+    <div className="col-md-3 mb-4">
 
       <div className="card h-100">
 
@@ -29,7 +30,7 @@ function CourseCard({ course }) {
           </p>
 
           <Link
-            to={`/course/${course.id}`}
+            to={`/course/${course._id}`}
             className="btn btn-primary"
           >
             View Course
@@ -40,7 +41,9 @@ function CourseCard({ course }) {
       </div>
 
     </div>
+
   );
+
 }
 
 export default CourseCard;
