@@ -58,8 +58,27 @@ try {
 
 } catch (error) {
 
-  console.log(error);
-  alert("Enrollment failed");
+  console.log("Enrollment Error:", error);
+
+  if (error.response) {
+
+    console.log("Backend Response:", error.response.data);
+
+    alert(error.response.data.message);
+
+  } else if (error.request) {
+
+    console.log("No response received:", error.request);
+
+    alert("No response from server");
+
+  } else {
+
+    console.log("Request Error:", error.message);
+
+    alert("Enrollment failed");
+
+  }
 
 }
 
