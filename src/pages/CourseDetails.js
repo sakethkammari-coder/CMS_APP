@@ -15,12 +15,10 @@ useEffect(() => {
 
 
 axios
-  .get("https://lms-backend-eyzj.onrender.com/api/courses")
+  .get(`https://lms-backend-eyzj.onrender.com/api/courses/${id}`)
   .then((res) => {
 
-    const foundCourse = res.data.find((c) => c._id === id);
-
-    setCourse(foundCourse);
+    setCourse(res.data);
 
   })
   .catch((err) => console.log(err));
@@ -65,17 +63,15 @@ try {
 
 }
 
+
 };
 
 const continueCourse = () => {
-
-
 navigate(`/player/${id}`);
-
-
 };
 
 return (
+
 
 <div className="container mt-4">
 
@@ -132,6 +128,7 @@ return (
   )}
 
 </div>
+
 
 );
 
