@@ -1,27 +1,41 @@
 import { useEffect, useState } from "react";
-import { getCourses } from "../services/api";
+import axios from "axios";
 import CourseCard from "../components/CourseCard";
 
 function MyCourses() {
 
   const [courses, setCourses] = useState([]);
 
-  const enrolledCourses =
-    JSON.parse(localStorage.getItem("courses")) || [];
-
   useEffect(() => {
 
-    getCourses().then((res) => {
+    const fetchCourses = async () => {
 
-      const allCourses = res.data;
+      const token = localStorage.getItem("token");
 
-      const filteredCourses = allCourses.filter(course =>
-        enrolledCourses.includes(String(course.id))
-      );
+      if (!token) return;
 
-      setCourses(filteredCourses);
+      try {
 
-    });
+        const res = await axios.get(
+          "https://lms-backend-eyzj.onrender.com/api/my-courses",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        setCourses(res.data);
+
+      } catch (error) {
+
+        console.log("MyCourses error:", error);
+
+      }
+
+    };
+
+    fetchCourses();
 
   }, []);
 
@@ -37,7 +51,7 @@ function MyCourses() {
           <p>No courses enrolled yet.</p>
         ) : (
           courses.map((course) => (
-            <CourseCard key={course.id} course={course} />
+            <CourseCard key={course._id} course={course} />
           ))
         )}
 
