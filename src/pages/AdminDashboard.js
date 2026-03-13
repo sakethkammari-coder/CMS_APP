@@ -3,141 +3,166 @@ import axios from "axios";
 
 function AdminDashboard() {
 
+const API = "https://lms-backend-eyzj.onrender.com";
+const token = localStorage.getItem("token");
+
 const [courses, setCourses] = useState([]);
 const [users, setUsers] = useState([]);
 
-const [title, setTitle] = useState("");
-const [instructor, setInstructor] = useState("");
-const [duration, setDuration] = useState("");
+const [title,setTitle]=useState("");
+const [instructor,setInstructor]=useState("");
+const [duration,setDuration]=useState("");
+const [level,setLevel]=useState("");
+const [thumbnail,setThumbnail]=useState("");
+const [description,setDescription]=useState("");
+const [content,setContent]=useState("");
+const [videoUrl,setVideoUrl]=useState("");
+const [lessons,setLessons]=useState("");
 
-const [editingCourseId, setEditingCourseId] = useState(null);
+const [editingCourseId,setEditingCourseId]=useState(null);
 
-const token = localStorage.getItem("token");
 
-const API = "https://lms-backend-eyzj.onrender.com";
+// ======================
+// FETCH COURSES
+// ======================
+const fetchCourses = async ()=>{
 
-const fetchCourses = async () => {
-
-try {
+try{
 
 const res = await axios.get(`${API}/api/courses`);
 setCourses(res.data);
 
-} catch (error) {
+}catch(error){
 
-console.log("Course fetch error:", error);
+console.log(error);
 
 }
 
 };
 
-const fetchUsers = async () => {
 
-if (!token) return;
+// ======================
+// FETCH USERS
+// ======================
+const fetchUsers = async ()=>{
 
-try {
+try{
 
-const res = await axios.get(`${API}/api/admin/users`, {
-headers: {
-Authorization: `Bearer ${token}`
-}
+const res = await axios.get(`${API}/api/admin/users`,{
+headers:{Authorization:`Bearer ${token}`}
 });
 
 setUsers(res.data);
 
-} catch (error) {
+}catch(error){
 
-console.log("User fetch error:", error);
+console.log(error);
 
 }
 
 };
 
-useEffect(() => {
+useEffect(()=>{
 
 fetchCourses();
 fetchUsers();
 
-}, []);
+},[]);
 
-const handleSubmit = async () => {
 
-try {
+// ======================
+// ADD OR UPDATE COURSE
+// ======================
+const handleSubmit = async ()=>{
 
-if (editingCourseId) {
+try{
+
+const courseData = {
+
+title,
+instructor,
+duration,
+level,
+thumbnail,
+description,
+content,
+videoUrl,
+lessons: lessons.split(",")
+
+};
+
+if(editingCourseId){
 
 await axios.put(
 `${API}/api/admin/course/${editingCourseId}`,
-{ title, instructor, duration },
-{
-headers: {
-Authorization: `Bearer ${token}`
-}
-}
+courseData,
+{headers:{Authorization:`Bearer ${token}`}}
 );
 
-alert("Course updated");
+alert("Course Updated");
 
-} else {
+}else{
 
 await axios.post(
 `${API}/api/admin/course`,
-{ title, instructor, duration },
-{
-headers: {
-Authorization: `Bearer ${token}`
-}
-}
+courseData,
+{headers:{Authorization:`Bearer ${token}`}}
 );
 
-alert("Course added");
+alert("Course Added");
 
 }
 
-setTitle("");
-setInstructor("");
-setDuration("");
-setEditingCourseId(null);
-
+clearForm();
 fetchCourses();
 
-} catch (error) {
+}catch(error){
 
 console.log(error);
-alert("Operation failed");
+alert("Operation Failed");
 
 }
 
 };
 
-const editCourse = (course) => {
+
+// ======================
+// EDIT COURSE
+// ======================
+const editCourse = (course)=>{
 
 setTitle(course.title || "");
 setInstructor(course.instructor || "");
 setDuration(course.duration || "");
+setLevel(course.level || "");
+setThumbnail(course.thumbnail || "");
+setDescription(course.description || "");
+setContent(course.content || "");
+setVideoUrl(course.videoUrl || "");
+setLessons(course.lessons?.join(",") || "");
 
 setEditingCourseId(course._id);
 
 };
 
-const deleteCourse = async (id) => {
 
-if (!window.confirm("Delete this course?")) return;
+// ======================
+// DELETE COURSE
+// ======================
+const deleteCourse = async(id)=>{
 
-try {
+if(!window.confirm("Delete this course?")) return;
+
+try{
 
 await axios.delete(
 `${API}/api/admin/course/${id}`,
-{
-headers: {
-Authorization: `Bearer ${token}`
-}
-}
+{headers:{Authorization:`Bearer ${token}`}}
 );
 
 fetchCourses();
 
-} catch (error) {
+}catch(error){
 
 console.log(error);
 
@@ -145,24 +170,24 @@ console.log(error);
 
 };
 
-const deleteUser = async (id) => {
 
-if (!window.confirm("Remove this user?")) return;
+// ======================
+// DELETE USER
+// ======================
+const deleteUser = async(id)=>{
 
-try {
+if(!window.confirm("Remove this user?")) return;
+
+try{
 
 await axios.delete(
 `${API}/api/admin/user/${id}`,
-{
-headers: {
-Authorization: `Bearer ${token}`
-}
-}
+{headers:{Authorization:`Bearer ${token}`}}
 );
 
 fetchUsers();
 
-} catch (error) {
+}catch(error){
 
 console.log(error);
 
@@ -170,49 +195,76 @@ console.log(error);
 
 };
 
-return (
+
+// ======================
+// CLEAR FORM
+// ======================
+const clearForm = ()=>{
+
+setTitle("");
+setInstructor("");
+setDuration("");
+setLevel("");
+setThumbnail("");
+setDescription("");
+setContent("");
+setVideoUrl("");
+setLessons("");
+setEditingCourseId(null);
+
+};
+
+
+// ======================
+// UI
+// ======================
+return(
 
 <div className="container mt-4">
 
 <h2>Admin Dashboard</h2>
 
+{/* COURSE FORM */}
+
 <div className="card p-3 mb-4">
 
 <h4>{editingCourseId ? "Edit Course" : "Add Course"}</h4>
 
-<input
-type="text"
-placeholder="Course Title"
-className="form-control mb-2"
-value={title}
-onChange={(e) => setTitle(e.target.value)}
-/>
+<input className="form-control mb-2" placeholder="Title"
+value={title} onChange={(e)=>setTitle(e.target.value)}/>
 
-<input
-type="text"
-placeholder="Instructor"
-className="form-control mb-2"
-value={instructor}
-onChange={(e) => setInstructor(e.target.value)}
-/>
+<input className="form-control mb-2" placeholder="Instructor"
+value={instructor} onChange={(e)=>setInstructor(e.target.value)}/>
 
-<input
-type="text"
-placeholder="Duration"
-className="form-control mb-2"
-value={duration}
-onChange={(e) => setDuration(e.target.value)}
-/>
+<input className="form-control mb-2" placeholder="Duration"
+value={duration} onChange={(e)=>setDuration(e.target.value)}/>
 
-<button
-className="btn btn-primary"
-onClick={handleSubmit}
+<input className="form-control mb-2" placeholder="Level"
+value={level} onChange={(e)=>setLevel(e.target.value)}/>
 
->
+<input className="form-control mb-2" placeholder="Thumbnail (Base64)"
+value={thumbnail} onChange={(e)=>setThumbnail(e.target.value)}/>
 
-{editingCourseId ? "Update Course" : "Add Course"} </button>
+<textarea className="form-control mb-2" placeholder="Description"
+value={description} onChange={(e)=>setDescription(e.target.value)}/>
+
+<textarea className="form-control mb-2" placeholder="Content"
+value={content} onChange={(e)=>setContent(e.target.value)}/>
+
+<input className="form-control mb-2" placeholder="Video URL"
+value={videoUrl} onChange={(e)=>setVideoUrl(e.target.value)}/>
+
+<input className="form-control mb-2" placeholder="Lessons (comma separated)"
+value={lessons} onChange={(e)=>setLessons(e.target.value)}/>
+
+<button className="btn btn-primary" onClick={handleSubmit}>
+{editingCourseId ? "Update Course" : "Add Course"}
+</button>
 
 </div>
+
+
+{/* COURSE TABLE */}
 
 <div className="card p-3 mb-4">
 
@@ -231,8 +283,7 @@ onClick={handleSubmit}
 
 <tbody>
 
-{courses.map((course) => (
-
+{courses.map(course=>(
 <tr key={course._id}>
 
 <td>{course.title}</td>
@@ -243,24 +294,21 @@ onClick={handleSubmit}
 
 <button
 className="btn btn-warning btn-sm me-2"
-onClick={() => editCourse(course)}
-
+onClick={()=>editCourse(course)}
 >
-
-Edit </button>
+Edit
+</button>
 
 <button
 className="btn btn-danger btn-sm"
-onClick={() => deleteCourse(course._id)}
-
+onClick={()=>deleteCourse(course._id)}
 >
-
-Delete </button>
+Delete
+</button>
 
 </td>
 
 </tr>
-
 ))}
 
 </tbody>
@@ -268,6 +316,9 @@ Delete </button>
 </table>
 
 </div>
+
+
+{/* USERS TABLE */}
 
 <div className="card p-3">
 
@@ -286,8 +337,7 @@ Delete </button>
 
 <tbody>
 
-{users.map((user) => (
-
+{users.map(user=>(
 <tr key={user._id}>
 
 <td>{user.name}</td>
@@ -296,20 +346,20 @@ Delete </button>
 
 <td>
 
-{user.role !== "admin" && (
+{user.role!=="admin" &&(
+
 <button
 className="btn btn-danger btn-sm"
-onClick={() => deleteUser(user._id)}
-
+onClick={()=>deleteUser(user._id)}
 >
+Remove
+</button>
 
-Remove </button>
 )}
 
 </td>
 
 </tr>
-
 ))}
 
 </tbody>

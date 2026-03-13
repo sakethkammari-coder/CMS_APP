@@ -3,55 +3,32 @@ import { Link, useNavigate } from "react-router-dom";
 function Navbar({ setSearch }) {
 
   const navigate = useNavigate();
-
   const user = JSON.parse(localStorage.getItem("user"));
-  
 
   const logout = () => {
-
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-
     navigate("/login");
-
   };
 
   return (
 
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark" style={{ position:"sticky", top:1, zIndex:1 }}>
+    <nav className="navbar navbar-dark bg-dark sticky-top">
 
       <div className="container">
 
-        {/* Logo */}
-        <Link className="navbar-brand" to="/">
-          LMS
-        </Link>
+        {/* ADMIN NAVBAR */}
+        {user?.role === "admin" ? (
 
-        {/* Search Bar */}
-        <input
-          type="text"
-          className="form-control w-50"
-          placeholder="Search courses..."
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        {/* Navigation Buttons */}
-        <div>
-
-          <Link className="btn btn-outline-light me-2" to="/">
-            Home
-          </Link>
-
-          {user && (
-            <Link className="btn btn-outline-light me-2" to="/my-courses">
-              My Courses
+          <>
+            <Link className="navbar-brand" to="/admin">
+              Admin Portal
             </Link>
-          )}
 
-          {user ? (
-            <>
+            <div className="d-flex align-items-center">
+
               <span className="text-white me-3">
-                Welcome {user.name}
+                Admin: {user.name}
               </span>
 
               <button
@@ -60,20 +37,60 @@ function Navbar({ setSearch }) {
               >
                 Logout
               </button>
-            </>
-          ) : (
-            <Link className="btn btn-warning" to="/login">
-              Login
-            </Link>
-          )}
 
-          {user?.role === "admin" && (
-            <Link className="nav-link" to="/admin">
-              Admin Panel
-            </Link>
-)}
+            </div>
+          </>
 
-        </div>
+        ) : (
+
+          <>
+            {/* USER NAVBAR */}
+
+            <Link className="navbar-brand" to="/">
+              LMS
+            </Link>
+
+            <input
+              type="text"
+              className="form-control w-50"
+              placeholder="Search courses..."
+              onChange={(e) => setSearch(e.target.value)}
+            />
+
+            <div>
+
+              <Link className="btn btn-outline-light me-2" to="/">
+                Home
+              </Link>
+
+              {user && (
+                <Link className="btn btn-outline-light me-2" to="/my-courses">
+                  My Courses
+                </Link>
+              )}
+
+              {user ? (
+                <>
+                  <span className="text-white me-3">
+                    Welcome {user.name}
+                  </span>
+
+                  <button
+                    className="btn btn-danger"
+                    onClick={logout}
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link className="btn btn-warning" to="/login">
+                  Login
+                </Link>
+              )}
+
+            </div>
+          </>
+        )}
 
       </div>
 
