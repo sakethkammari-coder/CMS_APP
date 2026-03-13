@@ -27,18 +27,22 @@ try {
     }
   );
 
-  // save JWT token
-  localStorage.setItem("token", res.data.token);
+  const { token, user } = res.data;
 
-  // save user info
-  localStorage.setItem(
-    "user",
-    JSON.stringify(res.data.user)
-  );
+  // save token
+  localStorage.setItem("token", token);
+
+  // save user
+  localStorage.setItem("user", JSON.stringify(user));
 
   alert("Login successful");
 
-  navigate("/");
+  // redirect based on role
+  if (user.role === "admin") {
+    navigate("/admin");
+  } else {
+    navigate("/");
+  }
 
 } catch (error) {
 
@@ -51,6 +55,7 @@ try {
   console.error(error);
 
 }
+
 
 };
 
@@ -102,6 +107,7 @@ return (
   </div>
 
 </div>
+
 
 );
 

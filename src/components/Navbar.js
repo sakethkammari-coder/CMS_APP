@@ -5,6 +5,7 @@ function Navbar({ setSearch }) {
   const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
+  
 
   const logout = () => {
 
@@ -65,6 +66,12 @@ function Navbar({ setSearch }) {
               Login
             </Link>
           )}
+
+          {user?.role === "admin" && (
+            <Link className="nav-link" to="/admin">
+              Admin Panel
+            </Link>
+)}
 
         </div>
 
