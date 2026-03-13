@@ -143,6 +143,11 @@ setLessons(course.lessons?.join(",") || "");
 
 setEditingCourseId(course._id);
 
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
 };
 
 
@@ -230,36 +235,72 @@ return(
 
 <h4>{editingCourseId ? "Edit Course" : "Add Course"}</h4>
 
-<input className="form-control mb-2" placeholder="Title"
-value={title} onChange={(e)=>setTitle(e.target.value)}/>
+<input className="form-control mb-2"
+placeholder="Course Title"
+value={title}
+onChange={(e)=>setTitle(e.target.value)}/>
 
-<input className="form-control mb-2" placeholder="Instructor"
-value={instructor} onChange={(e)=>setInstructor(e.target.value)}/>
+<input className="form-control mb-2"
+placeholder="Instructor Name"
+value={instructor}
+onChange={(e)=>setInstructor(e.target.value)}/>
 
-<input className="form-control mb-2" placeholder="Duration"
-value={duration} onChange={(e)=>setDuration(e.target.value)}/>
+<input className="form-control mb-2"
+placeholder="Duration (eg:10 hours)"
+value={duration}
+onChange={(e)=>setDuration(e.target.value)}/>
 
-<input className="form-control mb-2" placeholder="Level"
-value={level} onChange={(e)=>setLevel(e.target.value)}/>
+<input className="form-control mb-2"
+placeholder="Level (eg:Beginner,Intermediate,Advanced)"
+value={level}
+onChange={(e)=>setLevel(e.target.value)}/>
 
-<input className="form-control mb-2" placeholder="Thumbnail (Base64)"
-value={thumbnail} onChange={(e)=>setThumbnail(e.target.value)}/>
+<input className="form-control mb-2"
+placeholder="Thumbnail Link"
+value={thumbnail}
+onChange={(e)=>setThumbnail(e.target.value)}/>
 
-<textarea className="form-control mb-2" placeholder="Description"
-value={description} onChange={(e)=>setDescription(e.target.value)}/>
+<textarea className="form-control mb-2"
+placeholder="Description (1 line)"
+value={description}
+onChange={(e)=>setDescription(e.target.value)}/>
 
-<textarea className="form-control mb-2" placeholder="Content"
-value={content} onChange={(e)=>setContent(e.target.value)}/>
+<textarea className="form-control mb-2"
+placeholder="Content (Para)"
+value={content}
+onChange={(e)=>setContent(e.target.value)}/>
 
-<input className="form-control mb-2" placeholder="Video URL"
-value={videoUrl} onChange={(e)=>setVideoUrl(e.target.value)}/>
+<input className="form-control mb-2"
+placeholder="Video URL"
+value={videoUrl}
+onChange={(e)=>setVideoUrl(e.target.value)}/>
 
-<input className="form-control mb-2" placeholder="Lessons (comma separated)"
-value={lessons} onChange={(e)=>setLessons(e.target.value)}/>
+<input className="form-control mb-2"
+placeholder="Lessons (comma separated)"
+value={lessons}
+onChange={(e)=>setLessons(e.target.value)}/>
 
-<button className="btn btn-primary" onClick={handleSubmit}>
+<div>
+
+<button
+className="btn btn-primary me-2"
+onClick={handleSubmit}
+>
 {editingCourseId ? "Update Course" : "Add Course"}
 </button>
+
+{editingCourseId && (
+
+<button
+className="btn btn-secondary"
+onClick={clearForm}
+>
+Cancel Edit
+</button>
+
+)}
+
+</div>
 
 </div>
 

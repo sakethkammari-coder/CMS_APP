@@ -6,39 +6,47 @@ function CourseCard({ course }) {
 
     <div className="col-md-3 mb-4">
 
-      <div className="card h-100 course-card">
+      <Link
+        to={`/course/${course._id}`}
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
 
-        <img
-          src={course.thumbnail}
-          className="card-img-top"
-          height="200"
-          alt={course.title}
-        />
+        <div className="card h-100 course-card shadow-sm">
 
-        <div className="card-body">
+          <img
+            src={course.thumbnail}
+            className="card-img-top"
+            height="200"
+            alt={course.title}
+          />
 
-          <h5 className="card-title">
-            {course.title}
-          </h5>
+          <div className="card-body">
 
-          <p className="card-text">
-            <strong>Instructor:</strong> {course.instructor}
-          </p>
+            <h5 className="card-title">
+              {course.title}
+            </h5>
 
-          <p className="card-text">
-            <strong>Duration:</strong> {course.duration}
-          </p>
+            <p className="card-text">
+              <strong>Instructor:</strong> {course.instructor}
+            </p>
 
-          <Link
-            to={`/course/${course._id}`}
-            className="btn btn-primary"
-          >
-            View Course
-          </Link>
+            <p className="card-text">
+              <strong>Duration:</strong> {course.duration}
+            </p>
+
+            <p className="card-text">
+              <strong>Level:</strong> {course.level}
+            </p>
+
+            <button className="btn btn-primary">
+              View Course
+            </button>
+
+          </div>
 
         </div>
 
-      </div>
+      </Link>
 
     </div>
 

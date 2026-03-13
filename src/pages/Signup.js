@@ -9,17 +9,22 @@ function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const registerUser = async () => {
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !confirmPassword) {
       alert("Please fill all fields");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
       return;
     }
 
     try {
 
-      // signup request
       await axios.post(
         "https://lms-backend-eyzj.onrender.com/api/signup",
         {
@@ -79,6 +84,14 @@ function Signup() {
             className="form-control form-control-sm mb-3"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            className="form-control form-control-sm mb-3"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
           <button
