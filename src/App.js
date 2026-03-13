@@ -1,24 +1,22 @@
 import React, { useState } from "react";
-import { HashRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import AppRoutes from "./routes/AppRoutes";
+
 
 function App() {
 
   const [search, setSearch] = useState("");
 
   return (
-
-    <HashRouter>
+    <BrowserRouter>
 
       <Navbar setSearch={setSearch} />
 
       <AppRoutes search={search} />
 
-    </HashRouter>
-
+    </BrowserRouter>
   );
-
 }
 
 export default App;

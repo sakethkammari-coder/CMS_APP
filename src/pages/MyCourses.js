@@ -11,7 +11,6 @@ function MyCourses() {
     const fetchCourses = async () => {
 
       const token = localStorage.getItem("token");
-
       if (!token) return;
 
       try {
@@ -25,7 +24,10 @@ function MyCourses() {
           }
         );
 
-        setCourses(res.data);
+        // remove null courses
+        const validCourses = res.data.filter(course => course !== null);
+
+        setCourses(validCourses);
 
       } catch (error) {
 
