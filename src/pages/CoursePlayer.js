@@ -1,19 +1,42 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function CoursePlayer() {
 
   const { id } = useParams();
 
-  const lessons = [
-    "Introduction",
-    "React Setup",
-    "Components",
-    "Props",
-    "Hooks"
-  ];
-
+  const [course, setCourse] = useState(null);
   const [currentLesson, setCurrentLesson] = useState(0);
+
+  useEffect(() => {
+
+    const fetchCourse = async () => {
+
+      try {
+
+        const res = await axios.get(
+          `https://lms-backend-eyzj.onrender.com/api/courses/${id}`
+        );
+
+        setCourse(res.data);
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+
+    };
+
+    fetchCourse();
+
+  }, [id]);
+
+
+  if (!course) {
+    return <div className="container mt-4">Loading player...</div>;
+  }
 
   return (
 
@@ -26,12 +49,12 @@ function CoursePlayer() {
 
           <div className="card p-3">
 
-            <h4>Course Player</h4>
+            <h4>{course.title}</h4>
 
             <div className="ratio ratio-16x9">
 
               <iframe
-                src="https://www.youtube.com/embed/bMknfKXIFA8"
+                src={course.videoUrl}
                 title="course video"
                 allowFullScreen
               ></iframe>
@@ -39,12 +62,13 @@ function CoursePlayer() {
             </div>
 
             <h5 className="mt-3">
-              Lesson: {lessons[currentLesson]}
+              Lesson: {course.lessons[currentLesson]}
             </h5>
 
           </div>
 
         </div>
+
 
         {/* Lesson List */}
         <div className="col-md-4">
@@ -53,7 +77,7 @@ function CoursePlayer() {
 
             <h5>Lessons</h5>
 
-            {lessons.map((lesson, index) => (
+            {course.lessons.map((lesson, index) => (
 
               <div
                 key={index}
