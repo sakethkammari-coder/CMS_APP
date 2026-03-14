@@ -21,18 +21,26 @@ function Navbar({ setSearch }) {
         {user?.role === "admin" ? (
 
           <>
-            <Link className="navbar-brand" to="/admin">
-              Admin Portal
+            <Link className="navbar-brand" to="/">
+              LMS Admin
             </Link>
 
             <div className="d-flex align-items-center">
 
-              {/* View Courses Button */}
+              {/* View Courses */}
               <Link
-                className="btn btn-outline-light me-3"
+                className="btn btn-outline-light me-2"
                 to="/"
               >
-                View Courses
+                Home
+              </Link>
+
+              {/* Admin Dashboard */}
+              <Link
+                className="btn btn-warning me-3"
+                to="/admin"
+              >
+                Admin Panel
               </Link>
 
               <span className="text-white me-3">
