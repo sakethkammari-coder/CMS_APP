@@ -27,6 +27,14 @@ function Navbar({ setSearch }) {
 
             <div className="d-flex align-items-center">
 
+              {/* View Courses Button */}
+              <Link
+                className="btn btn-outline-light me-3"
+                to="/"
+              >
+                View Courses
+              </Link>
+
               <span className="text-white me-3">
                 Admin: {user.name}
               </span>
